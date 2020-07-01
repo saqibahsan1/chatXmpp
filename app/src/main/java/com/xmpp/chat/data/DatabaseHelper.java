@@ -55,7 +55,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             VCard card = new VCard();
             try {
                 card.load(XMPP.getInstance().getConnection(context),
-                        JidCreate.entityBareFrom(bareAddress));
+                        bareAddress);
             } catch (Exception e) {
                 e.printStackTrace();
             }

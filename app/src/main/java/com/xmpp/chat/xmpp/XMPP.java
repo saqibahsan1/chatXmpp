@@ -32,8 +32,8 @@ import java.util.Collection;
 
 public class XMPP {
 
-    public static String HOST1 = "192.168.0.233";
-    public static String HOST = "192.168.0.233";
+    public static String HOST1 = "srv3.mjunoon.tv";
+    public static String HOST = "srv3.mjunoon.tv";
 
 
     public static final String LIVESERVICE = "liveappgroup@liveapp." + HOST;
@@ -50,25 +50,14 @@ public class XMPP {
 
         builder.setHost(HOST1);
         builder.setPort(PORT);
-        builder.setCompressionEnabled(false);
-        builder.setDebuggerEnabled(true);
-        builder.setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);
+        builder.setUsernameAndPassword("saqib.ahsan37", "123789");
+        builder.setSecurityMode(ConnectionConfiguration.SecurityMode.ifpossible);
         builder.setSendPresence(true);
-        if (Build.VERSION.SDK_INT >= 14) {
-            builder.setKeystoreType("AndroidCAStore");
-            // config.setTruststorePassword(null);
-            builder.setKeystorePath(null);
-        } else {
-            builder.setKeystoreType("BKS");
-            String str = System.getProperty("javax.net.ssl.trustStore");
-            if (str == null) {
-                str = System.getProperty("java.home") + File.separator + "etc" + File.separator + "security"
-                        + File.separator + "cacerts.bks";
-            }
-            builder.setKeystorePath(str);
-        }
+        builder.setKeystoreType("AndroidCAStore");
+        // config.setTruststorePassword(null);
+        builder.setKeystorePath(null);
         DomainBareJid serviceName = JidCreate.domainBareFrom(HOST);
-        builder.setServiceName(serviceName);
+        builder.setXmppDomain(serviceName);
 
 
         return builder.build();
@@ -93,7 +82,7 @@ public class XMPP {
 
 //        if (!roster.isLoaded())
 //            roster.reloadAndWait();
-        Log.i(TAG, "Connection Properties: " + connection.getHost() + " " + connection.getServiceName());
+        Log.i(TAG, "Connection Properties: " + connection.getHost());
         Log.i(TAG, "Time taken in first time connect: " + (System.currentTimeMillis() - l));
         Roster roster = Roster.getInstanceFor(connection);
 
@@ -219,25 +208,24 @@ public class XMPP {
 
         PingManager pingManager = PingManager.getInstanceFor(connect);
         pingManager.setPingInterval(150000);
-        connect.sendPacket(p);
 
 
     }
 
-    public void register(String user, String pass) throws XMPPException, SmackException.NoResponseException, SmackException.NotConnectedException {
-        Log.i(TAG, "inside XMPP register method, " + user + " : " + pass);
-        long l = System.currentTimeMillis();
-        try {
-            AccountManager accountManager = AccountManager.getInstance(connect());
-            accountManager.sensitiveOperationOverInsecureConnection(true);
-            accountManager.createAccount(Localpart.from(user), pass);
-        } catch (SmackException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        Log.i(TAG, "Time taken to register: " + (System.currentTimeMillis() - l));
-    }
+//    public void register(String user, String pass) throws XMPPException, SmackException.NoResponseException, SmackException.NotConnectedException {
+//        Log.i(TAG, "inside XMPP register method, " + user + " : " + pass);
+//        long l = System.currentTimeMillis();
+//        try {
+//            AccountManager accountManager = AccountManager.getInstance(connect());
+//            accountManager.sensitiveOperationOverInsecureConnection(true);
+//            accountManager.createAccount(user, pass);
+//        } catch (SmackException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        Log.i(TAG, "Time taken to register: " + (System.currentTimeMillis() - l));
+//    }
 }

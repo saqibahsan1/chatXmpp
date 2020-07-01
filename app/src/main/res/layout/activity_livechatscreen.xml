@@ -15,7 +15,7 @@
         android:background="@color/blue" />
 
     <ListView
-        android:id="@id/listLiveChat"
+        android:id="@+id/listLiveChat"
         android:layout_width="fill_parent"
         android:layout_height="0.0dip"
         android:layout_weight="1.0"
@@ -49,7 +49,7 @@
             <!-- android:src="@android:drawable/ic_menu_add" /> -->
 
             <EditText
-                android:id="@id/editMessage"
+                android:id="@+id/editMessage"
                 android:layout_width="0.0dip"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.0"
@@ -73,7 +73,7 @@
                 android:src="@drawable/emoji_btn_normal" />
 
             <ImageView
-                android:id="@id/buttonSend"
+                android:id="@+id/buttonSend"
                 android:layout_width="50.0dip"
                 android:layout_height="32.0dip"
                 android:background="@null"
@@ -85,7 +85,7 @@
         </LinearLayout>
 
         <TextView
-            android:id="@id/textSupportTyping"
+            android:id="@+id/textSupportTyping"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4.0dip"

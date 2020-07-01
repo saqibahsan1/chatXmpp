@@ -11,6 +11,7 @@ import com.xmpp.chat.data.DatabaseHelper;
 import com.xmpp.chat.framework.Notifications;
 import com.xmpp.chat.xmpp.XMPP;
 
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
@@ -137,5 +138,10 @@ public class MessageHandler implements StanzaListener {
         String foregroundTaskPackageName = foregroundTaskInfo.topActivity
                 .getPackageName();
         return foregroundTaskPackageName.equals(context.getPackageName());
+    }
+
+    @Override
+    public void processStanza(Stanza packet) throws SmackException.NotConnectedException, InterruptedException, SmackException.NotLoggedInException {
+
     }
 }

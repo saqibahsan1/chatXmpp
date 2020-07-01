@@ -78,19 +78,19 @@ public class Activity_ListUser extends Activity implements OnClickListener {
 
     }
 
-    private boolean register(String paramString1, String paramString2) {
-        try {
-            XMPP.getInstance().register(paramString1, paramString2);
-            return true;
-        } catch (XMPPException localXMPPException) {
-            localXMPPException.printStackTrace();
-        } catch (NoResponseException e) {
-            e.printStackTrace();
-        } catch (NotConnectedException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
+//    private boolean register(String paramString1, String paramString2) {
+//        try {
+//            XMPP.getInstance().register(paramString1, paramString2);
+//            return true;
+//        } catch (XMPPException localXMPPException) {
+//            localXMPPException.printStackTrace();
+//        } catch (NoResponseException e) {
+//            e.printStackTrace();
+//        } catch (NotConnectedException e) {
+//            e.printStackTrace();
+//        }
+//        return false;
+//    }
 
     private boolean login(String user, String pass, String username) {
         try {
@@ -138,16 +138,16 @@ public class Activity_ListUser extends Activity implements OnClickListener {
         protected Boolean doInBackground(Void... paramVarArgs) {
 
             String mEmail = userid;
-            String mUsername = "user1";
-            String mPassword = "welcome";
+            String mUsername = "saqib.ahsan37";
+            String mPassword = "123789";
 
-            if (register(userid, "welcome")) {
-                try {
-                    XMPP.getInstance().close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+//            if (register(userid, "123789")) {
+//                try {
+//                    XMPP.getInstance().close();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
             return login(mEmail, mPassword, mUsername);
         }
 
@@ -209,7 +209,7 @@ public class Activity_ListUser extends Activity implements OnClickListener {
                     Intent in = new Intent(activity, ActivityChatScreen.class);
                     in.putExtra("username", "user1");
                     in.putExtra("id", etNameuser1.getText().toString() + "@"
-                            + XMPP.HOST + "/Smack");
+                            + XMPP.HOST );
                     startActivity(in);
                 }
 
@@ -223,7 +223,7 @@ public class Activity_ListUser extends Activity implements OnClickListener {
                     Intent in1 = new Intent(activity, ActivityChatScreen.class);
                     in1.putExtra("username", "user2");
                     in1.putExtra("id", etNameuser2.getText().toString() + "@"
-                            + XMPP.HOST + "/Smack");
+                            + XMPP.HOST );
                     startActivity(in1);
                 }
 

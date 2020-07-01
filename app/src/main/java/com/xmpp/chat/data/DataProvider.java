@@ -19,6 +19,7 @@ import com.xmpp.chat.xmpp.XMPP;
 
 
 import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.StanzaListener;
@@ -160,7 +161,7 @@ public class DataProvider {
 							try {
 								card.load(
 										XMPP.getInstance().getConnection(
-												LiveApp.get()), JidCreate.entityBareFrom(chatItem.jid));
+												LiveApp.get()), chatItem.jid);
 								addedChats.get((chatItem.jid)).imageByte = card
 										.getAvatar();
 								if (addedChats.get((chatItem.jid)).imageByte != null) {
@@ -175,10 +176,6 @@ public class DataProvider {
 							} catch (NotConnectedException e) {
 								e.printStackTrace();
 							} catch (XMPPErrorException e) {
-								e.printStackTrace();
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							} catch (XmppStringprepException e) {
 								e.printStackTrace();
 							}
 						}
@@ -339,11 +336,11 @@ public class DataProvider {
 						.getTimeInMillis();
 
 					messageItem.opponent = (transfer
-                            .getRequestor().getLocalpartOrNull().toString());
+                            .getRequestor());
 
 				messageItem.opponentDisplay = DatabaseHelper.getInstance(
 						LiveApp.get()).getDisplayName(LiveApp.get(),
-						(transfer.getRequestor().getLocalpartOrNull().toString()));
+						(transfer.getRequestor()));
 				if (group != null && group.length() > 0) {
 					String sender = (group);
 					messageItem.opponent = sender;
@@ -351,7 +348,7 @@ public class DataProvider {
 							LiveApp.get()).getDisplayName(
 							LiveApp.get(),
 							(transfer
-									.getRequestor().getLocalpartOrNull().toString()));
+									.getRequestor()));
 				}
 				// Crashlytics.log(Log.WARN, "liveApp", "Message for " +
 				// outFile.getAbsolutePath() + " added");
@@ -376,7 +373,7 @@ public class DataProvider {
 							&& (group).equals(
 									(chatItem.jid));
 					if (isGroup
-							|| transfer.getRequestor().getLocalpartOrNull().toString().startsWith(
+							|| transfer.getRequestor().startsWith(
 									(chatItem.jid))) {
 						chatItem.lastMessageTimestamp = System
 								.currentTimeMillis();
@@ -420,8 +417,7 @@ public class DataProvider {
 		packetListener = new StanzaListener() {
 
 			@Override
-			public void processPacket(Stanza packet)
-					throws NotConnectedException {
+			public void processStanza(Stanza packet) throws NotConnectedException, InterruptedException, SmackException.NotLoggedInException {
 				if ((packet instanceof Message)) {
 					// Collection<PacketExtension> extensions =
 					// packet.getExtensions();
@@ -484,10 +480,11 @@ public class DataProvider {
 
 				}
 			}
+
 		};
 
 		XMPP.getInstance().getConnection(LiveApp.get())
-				.addPacketListener(packetListener, null);
+				.addStanzaSendingListener(packetListener, null);
 
 		// ProviderManager.addExtensionProvider("group", "liveapp:iq:group",
 		// GetGroupExtension.getProvider());
@@ -657,7 +654,7 @@ public class DataProvider {
 						try {
 							card.load(
 									XMPP.getInstance().getConnection(
-											LiveApp.get()), JidCreate.entityBareFrom(chatItem.jid));
+											LiveApp.get()), chatItem.jid);
 							addedChats.get((chatItem.jid)).imageByte = card
 									.getAvatar();
 							if (addedChats.get((chatItem.jid)).imageByte != null) {

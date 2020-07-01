@@ -9,8 +9,10 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
+import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.iqlast.LastActivityManager;
 import org.jivesoftware.smackx.iqlast.packet.LastActivity;
+import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 
 import com.xmpp.chat.dao.StatusItem;
@@ -22,55 +24,63 @@ import android.text.format.DateFormat;
 
 public class RosterManager {
 
-	public static String getLastActivity(Context context, String jid, boolean showStatus) {
-		try {
-			LastActivity la = LastActivityManager.getInstanceFor(XMPP.getInstance().getConnection(context)).getLastActivity(JidCreate.bareFrom(jid));
-			long seconds = la.lastActivity;
-			if (seconds == 0) {
-				if (showStatus) {
-					Roster roster = Roster.getInstanceFor( XMPP.getInstance().getConnection(context));
+    public static String getLastActivity(Context context, String jid, boolean showStatus) {
+        try {
+//            if (isLastActivitySupported(jid, context)) {
+                LastActivity la = LastActivityManager.getInstanceFor(XMPP.getInstance().getConnection(context)).getLastActivity(jid);
+                long seconds = la.lastActivity;
+                if (seconds == 0) {
+                    if (showStatus) {
+                        Roster roster = Roster.getInstanceFor(XMPP.getInstance().getConnection(context));
 //					Iterator<Presence> pr = XMPP.getInstance().getConnection(context).getRoster().getPresences(jid).iterator();
-					Iterator<Presence> pr = roster.getPresences(JidCreate.bareFrom(jid)).iterator();
-					while (pr.hasNext()) {
-						Presence p = ((Presence) pr.next());
-						if (p.getType() == Presence.Type.available) {
-							StatusItem statusItem = StatusItem.fromJSON(p.getStatus());
-							String status = statusItem.status;
-							if(statusItem.mood>0)
-								DatabaseHelper.getInstance(context).updateContactStatus(jid, statusItem.status, statusItem.mood);
-							if (status == null || status.equals("")) {
-								return "Status not set";
-							} 
-							return status;
-						}
-					}
-				}
-				return "Online";
-			}
+                        Iterator<Presence> pr = roster.getPresences(JidCreate.bareFrom(jid)).iterator();
+                        while (pr.hasNext()) {
+                            Presence p = ((Presence) pr.next());
+                            if (p.getType() == Presence.Type.available) {
+                                StatusItem statusItem = StatusItem.fromJSON(p.getStatus());
+                                String status = statusItem.status;
+                                if (statusItem.mood > 0)
+                                    DatabaseHelper.getInstance(context).updateContactStatus(jid, statusItem.status, statusItem.mood);
+                                if (status == null || status.equals("")) {
+                                    return "Status not set";
+                                }
+                                return status;
+                            }
+                        }
+                    }
+                    return "Online";
+                }
 
-			Calendar curCalendar = Calendar.getInstance();
-			Calendar laCalendar = Calendar.getInstance();
-			laCalendar.add(Calendar.SECOND, (int) -seconds);
-			if (curCalendar.get(Calendar.DAY_OF_MONTH) != laCalendar.get(Calendar.DAY_OF_MONTH)) {
-				return "Last online: " + new SimpleDateFormat("MM/dd").format(laCalendar.getTime());
-			} else {
-				return "Last online: " + DateFormat.getTimeFormat(context).format(laCalendar.getTime());
-			}
-			// int day = (int) TimeUnit.SECONDS.toDays(seconds);
-			// long hours = TimeUnit.SECONDS.toHours(seconds) - (day * 24);
-			// long minute = TimeUnit.SECONDS.toMinutes(seconds) -
-			// (TimeUnit.SECONDS.toHours(seconds) * 60);
-			// long second = TimeUnit.SECONDS.toSeconds(seconds) -
-			// (TimeUnit.SECONDS.toMinutes(seconds) * 60);
-		} catch (XMPPException e) {
-			// e.printStackTrace();
-		} catch (NoResponseException e) {
-			e.printStackTrace();
-		} catch (NotConnectedException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return "Using live App";
-	}
+                Calendar curCalendar = Calendar.getInstance();
+                Calendar laCalendar = Calendar.getInstance();
+                laCalendar.add(Calendar.SECOND, (int) -seconds);
+                if (curCalendar.get(Calendar.DAY_OF_MONTH) != laCalendar.get(Calendar.DAY_OF_MONTH)) {
+                    return "Last online: " + new SimpleDateFormat("MM/dd").format(laCalendar.getTime());
+                } else {
+                    return "Last online: " + DateFormat.getTimeFormat(context).format(laCalendar.getTime());
+                }
+                // int day = (int) TimeUnit.SECONDS.toDays(seconds);
+                // long hours = TimeUnit.SECONDS.toHours(seconds) - (day * 24);
+                // long minute = TimeUnit.SECONDS.toMinutes(seconds) -
+                // (TimeUnit.SECONDS.toHours(seconds) * 60);
+                // long second = TimeUnit.SECONDS.toSeconds(seconds) -
+                // (TimeUnit.SECONDS.toMinutes(seconds) * 60);
+//            }
+        } catch (XMPPException e) {
+            // e.printStackTrace();
+        } catch (NoResponseException e) {
+            e.printStackTrace();
+        } catch (NotConnectedException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "Using live App";
+
+    }
+
+
+    public static boolean isLastActivitySupported(String jid, Context context) throws NoResponseException, XMPPException.XMPPErrorException, NotConnectedException, InterruptedException {
+        return ServiceDiscoveryManager.getInstanceFor(XMPP.getInstance().getConnection(context)).supportsFeature(jid, LastActivity.NAMESPACE);
+    }
 }

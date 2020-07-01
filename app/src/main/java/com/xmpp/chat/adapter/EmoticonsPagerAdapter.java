@@ -1,16 +1,17 @@
 package com.xmpp.chat.adapter;
 
-import java.util.ArrayList;
+import android.app.Activity;
+import android.view.View;
+import android.widget.GridView;
+
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.xmppsample.R;
 import com.xmpp.chat.adapter.EmoticonsGridAdapter.KeyClickListener;
 import com.xmpp.chat.dao.EmojiItem;
 
-import android.app.Activity;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.view.View;
-import android.widget.GridView;
+import java.util.ArrayList;
 
 public class EmoticonsPagerAdapter extends PagerAdapter {
 

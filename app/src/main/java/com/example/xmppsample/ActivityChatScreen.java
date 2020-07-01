@@ -1,6 +1,7 @@
 package com.example.xmppsample;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -9,7 +10,6 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
-import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.TextWatcher;
@@ -32,6 +32,8 @@ import android.widget.PopupWindow;
 import android.widget.PopupWindow.OnDismissListener;
 import android.widget.TextView;
 
+import androidx.viewpager.widget.ViewPager;
+
 import com.j256.ormlite.stmt.UpdateBuilder;
 import com.xmpp.chat.adapter.EmoticonsGridAdapter.KeyClickListener;
 import com.xmpp.chat.adapter.EmoticonsPagerAdapter;
@@ -53,9 +55,9 @@ import com.xmpp.chat.util.EmojiUtil;
 import com.xmpp.chat.util.SettingsUtil;
 import com.xmpp.chat.xmpp.XMPP;
 
-import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.chat.Chat;
 import org.jivesoftware.smack.chat.ChatManager;
 import org.jivesoftware.smack.chat.ChatManagerListener;
@@ -85,7 +87,7 @@ import java.util.List;
 
 public class ActivityChatScreen extends Activity implements OnDataChanged {
 
-    // ActionBar actionBar;
+     ActionBar actionBar;
     String id;
     Activity acitiviy = ActivityChatScreen.this;
     Context context = ActivityChatScreen.this;
@@ -127,13 +129,12 @@ public class ActivityChatScreen extends Activity implements OnDataChanged {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // actionBar = getActionBar();
-        // actionBar.setDisplayHomeAsUpEnabled(true);
-        // actionBar.setHomeButtonEnabled(true);
         setContentView(R.layout.activity_livechatscreen);
         chatItem = new ChatItem();
-
-        // actionBar.setTitle(getIntent().getStringExtra("username"));
+//        actionBar = getActionBar();
+//        actionBar.setDisplayHomeAsUpEnabled(true);
+//        actionBar.setHomeButtonEnabled(true);
+//         actionBar.setTitle(getIntent().getStringExtra("username"));
         id = getIntent().getStringExtra("id");
         chatItem.displayName = getIntent().getStringExtra("username");
         chatItem.jid = getIntent().getStringExtra("id");
@@ -392,7 +393,7 @@ public class ActivityChatScreen extends Activity implements OnDataChanged {
             emoticonsCover.setVisibility(View.GONE);
         }
 
-        // actionBar.setIcon(R.drawable.ic_launcher);
+//         actionBar.setIcon(R.drawable.ic_launcher);
 
         super.onDestroy();
     }
@@ -498,7 +499,7 @@ public class ActivityChatScreen extends Activity implements OnDataChanged {
                                     String status = pr.getStatus();
                                     StatusItem stat = StatusItem.fromJSON(status);
 
-                                    // actionBar.setSubtitle(stat.status);
+//                                     actionBar.setSubtitle(stat.status);
 
                                     if (stat.mood > 0)
                                         menuItemMood.setIcon(LiveUtil
@@ -508,8 +509,8 @@ public class ActivityChatScreen extends Activity implements OnDataChanged {
                         });
                     }
 
-                    final String la = RosterManager.getLastActivity(acitiviy,
-                            chatItem.jid, false);
+//                    final String la = RosterManager.getLastActivity(acitiviy,
+//                            chatItem.jid, false);
                     if (acitiviy == null) {
                         return;
                     }
@@ -519,42 +520,34 @@ public class ActivityChatScreen extends Activity implements OnDataChanged {
                         public void run() {
                             try {
 
-                                // actionBar.setSubtitle(la);
+//                                 actionBar.setSubtitle(la);
                             } catch (Exception e) {
                             }
                         }
                     });
                     final VCard card = new VCard();
 
-                    card.load(XMPP.getInstance().getConnection(acitiviy),
-                            JidCreate.entityBareFrom(chatItem.jid));
-                    byte[] img = card.getAvatar();
-                    if (img != null) {
-                        final Bitmap bmp = BitmapFactory.decodeByteArray(img,
-                                0, img.length);
-                        try {
-                            runOnUiThread(new Runnable() {
-                                public void run() {
-
-                                    // actionBar.setIcon(new
-                                    // BitmapDrawable(getResources(), bmp));
-                                }
-                            });
-                        } catch (Exception e) {
-
-                            // actionBar.setIcon(R.drawable.ic_chat_person);
-                        }
-                    } else {
-
-                    }
-                } catch (NoResponseException e1) {
-                    e1.printStackTrace();
-                } catch (XMPPErrorException e1) {
-                    e1.printStackTrace();
-                } catch (NotConnectedException e1) {
-                    e1.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+//                    card.load(XMPP.getInstance().getConnection(acitiviy),
+//                           chatItem.jid);
+//                    byte[] img = card.getAvatar();
+//                    if (img != null) {
+//                        final Bitmap bmp = BitmapFactory.decodeByteArray(img,
+//                                0, img.length);
+//                        try {
+//                            runOnUiThread(new Runnable() {
+//                                public void run() {
+//
+////                                     actionBar.setIcon(new
+////                                             BitmapDrawable(getResources(), bmp));
+//                                }
+//                            });
+//                        } catch (Exception e) {
+//
+////                             actionBar.setIcon(R.drawable.ic_chat_person);
+//                        }
+//                    } else {
+//
+//                    }
                 } catch (XmppStringprepException e) {
                     e.printStackTrace();
                 }
@@ -659,13 +652,13 @@ public class ActivityChatScreen extends Activity implements OnDataChanged {
                                     .getConnection(acitiviy).getUser());
                             p.setTo(chatItem.jid);
                             XMPP.getInstance().getConnection(acitiviy)
-                                    .sendPacket(p);
+                                    .sendStanza(p);
                             p = new Presence(Type.subscribed);
                             p.setFrom(XMPP.getInstance()
                                     .getConnection(acitiviy).getUser());
                             p.setTo(chatItem.jid);
                             XMPP.getInstance().getConnection(acitiviy)
-                                    .sendPacket(p);
+                                    .sendStanza(p);
 
                         } catch (NotConnectedException e1) {
                             e1.printStackTrace();

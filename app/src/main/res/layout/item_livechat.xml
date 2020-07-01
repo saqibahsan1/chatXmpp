@@ -13,7 +13,7 @@
         android:paddingTop="5dp" >
 
         <View
-            android:id="@id/arrowLeft"
+            android:id="@+id/arrowLeft"
             android:layout_width="35.0dip"
             android:layout_height="35.0dip"
             android:layout_gravity="center_vertical"
@@ -76,13 +76,13 @@
             </FrameLayout>
 
             <LinearLayout
-                android:id="@id/layoutMessage"
+                android:id="@+id/layoutMessage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" >
 
                 <TextView
-                    android:id="@id/textWhoSent"
+                    android:id="@+id/textWhoSent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="12dp"
@@ -98,7 +98,7 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        android:id="@id/text1"
+                        android:id="@+id/text1"
                         android:layout_width="0dp"
                         android:layout_height="fill_parent"
                         android:layout_marginBottom="8.0dip"
@@ -165,7 +165,7 @@
         </LinearLayout>
 
         <View
-            android:id="@id/arrowRight"
+            android:id="@+id/arrowRight"
             android:layout_width="35.0dip"
             android:layout_height="35.0dip"
             android:layout_gravity="center_vertical"
